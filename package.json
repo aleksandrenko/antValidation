@@ -1,0 +1,22 @@
+{
+  "name": "antvalidation",
+  "version": "1.0.0",
+  "description": "Anotation Validaton",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest --watchAll"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aleksandrenko/antValidation.git"
+  },
+  "author": "Nikolay Aleksandrenko",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/aleksandrenko/antValidation/issues"
+  },
+  "homepage": "https://github.com/aleksandrenko/antValidation#readme",
+  "devDependencies": {
+    "jest": "^22.4.3"
+  }
+}
