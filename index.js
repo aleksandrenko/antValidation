@@ -1,62 +1,114 @@
+const TEXTS = require('./texts');
 
-const VALIDATORS = {
-    required: (value) => value !== '' && value !== undefined,
-    min: (value, min) => (value.length || value) > min,
-    max: (value, max) => (value.length || value) < max,
+const assertString = (input, error) => {
+    const isString = (typeof input === 'string' || input instanceof String);
+
+    if (!isString) {
+        throw new TypeError(error);
+    }
 };
 
 
-export default ({fieldConfig, value}) => {
-    return '';
-}
+const VALIDATORS = {
 
-import fieldValidator from './utils/fieldValidator';
+    required: (value) => (value !== '' && value !== undefined)
+        ? ''
+        : TEXTS.required
+    ,
 
-const getFieldConfig = (field) => ({
-    type: 'text',
-    defaultValue: '3',
-    validators: {
-        int: true,
-        float: true,
-        string: true,
-        boolean: true,
-        id: true,
-        date: true,
-        format: 'mm:dd:yyyy',
-        future: true,
-        futureOrPresent: true,
-        past: true,
-        pastOrPresent: true,
-        email: true,
-        file: true,
-        url: true,
-        precision: 10,
-        positive: true,
-        positiveOrZero: true,
-        negative: true,
-        negativeOrZero: true
+    int: (value) => (parseInt(value).toString() === value)
+        ? ''
+        : TEXTS.int
+    ,
+
+    float: (value) => '',
+    boolean: (value) => '',
+    date: (value) => '',
+    // format: (value, format) => '',
+    // future: (value) => '',
+    // futureOrPresent: (value) => '',
+    // past: (value) => '',
+    // pastOrPresent: (value) => '',
+    email: (value) => '',
+    // file: (value) => '',
+    // ip: (value) => '',
+    // url: (value) => '',
+    // precision: (value, percision) => '',
+    // positive: (value) => '',
+    // positiveOrZero: (value) => '',
+    // negative: (value) => '',
+    // negativeOrZero: (value) => '',
+
+    min: (_value, _min) => {
+        const valueFloat = parseFloat(_value);
+        const min = parseFloat(_min);
+
+        if (Number.isNaN(valueFloat)) {
+            return _value.length > min
+                ? ''
+                : TEXTS.minString(min);
+        } else {
+            return valueFloat > min
+                ? ''
+                : TEXTS.minNumber(min);
+        }
     },
-    behaviour: {
-        noUI: true,
-        noUserInput: true
+
+    max: (_value, _max) => {
+        const valueFloat = parseFloat(_value);
+        const max = parseFloat(_max);
+
+        if (Number.isNaN(valueFloat)) {
+            return _value.length < max
+                ? ''
+                : TEXTS.maxString(max);
+        } else {
+            return valueFloat < max
+                ? ''
+                : TEXTS.maxNumber(max);
+        }
     }
-});
+};
 
 
-test('No validators and no type', () => {
-    const fieldConfig = getFieldConfig();
-    const value = '4';
-    const error = fieldValidator({fieldConfig, value});
-    expect(error).toBe('');
-});
+const validate = ({ants, value}) => {
+    assertString(ants, TEXTS.antsFormat);
+    assertString(value, TEXTS.valueFormat);
 
-test('No validators and no type', () => {
-    const fieldConfig = getFieldConfig({
+    const validators = ants
+        .split('@')
+        .map(ant => ant.trim().toLowerCase())
+        .splice(1);
 
-    });
-    const value = '4';
-    const error = fieldValidator({fieldConfig, value});
-    expect(error).toBe('');
-});
+    const errors = validators
+        .map(validator => {
+            const parts = validator
+                .replace(')', '')
+                .split('(');
+
+            const name = parts[0];
+            const config = parts[1];
+
+            return {
+                name,
+                config
+            };
+        }).reduce((sum, validator) => {
+            const { name, config } = validator;
+            const vfn = VALIDATORS[name];
+            const error = vfn && vfn(value, config);
+            error && sum.push(error);
+
+            return sum;
+        }, []);
+
+    return errors;
+};
+
+
+module.exports = validate;
+
+
+
 
 
