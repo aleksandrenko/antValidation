@@ -104,7 +104,9 @@ const validate = ({ants, value}) => {
         }).reduce((sum, validator) => {
             const { name, config } = validator;
             const vfn = VALIDATORS[name];
-            const error = vfn && vfn(value, config);
+            const error = vfn
+                ? vfn(value, config)
+                : console.warn(`Trying to use unknown validator (${name})`);
             error && sum.push(error);
 
             return sum;
