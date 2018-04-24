@@ -6,5 +6,7 @@ module.exports = {
     minNumber: (min) => `Value must be larger then ${min}.`,
     minString: (min) => `Text must be longer then ${min} characters.`,
     maxNumber: (max) => `Value must be smaller then ${max}.`,
-    maxString: (max) => `Text must be shorter then ${max} characters.`
+    maxString: (max) => `Text must be shorter then ${max} characters.`,
+    bool: 'Value must me boolean value.',
+    float: 'Value must be a number.'
 };

@@ -21,15 +21,23 @@ const VALIDATORS = {
         : TEXTS.int
     ,
 
-    float: (value) => '',
-    boolean: (value) => '',
-    date: (value) => '',
+    float: (value) => (parseFloat(value).toString() === value)
+        ? ''
+        : TEXTS.float
+    ,
+
+    boolean: (value) => (['true', 'false'].includes(value.toLowerCase()))
+        ? ''
+        : TEXTS.bool
+    ,
+
+    // date: (value) => '',
     // format: (value, format) => '',
     // future: (value) => '',
     // futureOrPresent: (value) => '',
     // past: (value) => '',
     // pastOrPresent: (value) => '',
-    email: (value) => '',
+    // email: (value) => '',
     // file: (value) => '',
     // ip: (value) => '',
     // url: (value) => '',

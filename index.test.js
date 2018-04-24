@@ -39,3 +39,36 @@ test('Min/Max', () => {
         TEXTS.maxNumber(10)
     ]);
 });
+
+test('Bool', () => {
+    const ants = 'Some text @boolean';
+    expect(validate({ants, value: 'ABC'})).toEqual([
+        TEXTS.bool
+    ]);
+
+    expect(validate({ants, value: '124'})).toEqual([
+        TEXTS.bool
+    ]);
+
+    expect(validate({ants, value: ''})).toEqual([
+        TEXTS.bool
+    ]);
+
+    expect(validate({ants, value: 'true'})).toEqual([]);
+    expect(validate({ants, value: 'false'})).toEqual([]);
+    expect(validate({ants, value: 'False'})).toEqual([]);
+});
+
+test('Float', () => {
+    const ants = 'Some text @float';
+    expect(validate({ants, value: 'ABC'})).toEqual([
+        TEXTS.float
+    ]);
+
+    expect(validate({ants, value: ''})).toEqual([
+        TEXTS.float
+    ]);
+
+    expect(validate({ants, value: '1'})).toEqual([]);
+    expect(validate({ants, value: '1.412'})).toEqual([]);
+});
