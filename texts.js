@@ -8,5 +8,12 @@ module.exports = {
     maxNumber: (max) => `Value must be smaller then ${max}.`,
     maxString: (max) => `Text must be shorter then ${max} characters.`,
     bool: 'Value must me boolean value.',
-    float: 'Value must be a number.'
+    float: 'Value must be a number.',
+    email: "Value must be a valid email.",
+    url: "Value must be a valid URL address.",
+    number: "Value must be a number.",
+    cc: "Values must be a valid credit card.",
+    latLng: "Values must be a valid latitude-longitude coordinate in the format lat,long or lat, long.",
+    date: "Value must be a valid date.",
+    ip: "Value must be a valid IP address."
 };

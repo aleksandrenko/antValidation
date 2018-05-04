@@ -1,4 +1,7 @@
 const TEXTS = require('./texts');
+const validator = require('validator');
+
+// all validator available https://github.com/chriso/validator.js
 
 const assertString = (input, error) => {
     const isString = (typeof input === 'string' || input instanceof String);
@@ -11,19 +14,29 @@ const assertString = (input, error) => {
 
 const VALIDATORS = {
 
-    required: (value) => (value !== '' && value !== undefined)
+    required: (value) => !validator.isEmpty(value)
         ? ''
         : TEXTS.required
     ,
 
-    int: (value) => (parseInt(value).toString() === value)
+    int: (value) => validator.isInt(value)
         ? ''
         : TEXTS.int
     ,
 
-    float: (value) => (parseFloat(value).toString() === value)
+    number: (value) => validator.isNumeric(value)
+        ? ''
+        : TEXTS.number
+    ,
+
+    float: (value) => validator.isFloat(value)
         ? ''
         : TEXTS.float
+    ,
+
+    isCreditCard: (value) => validator.isCreditCard(value)
+        ? ''
+        : TEXTS.cc
     ,
 
     boolean: (value) => (['true', 'false'].includes(value.toLowerCase()))
@@ -31,27 +44,36 @@ const VALIDATORS = {
         : TEXTS.bool
     ,
 
-    // date: (value) => '',
-    // format: (value, format) => '',
-    // future: (value) => '',
-    // futureOrPresent: (value) => '',
-    // past: (value) => '',
-    // pastOrPresent: (value) => '',
-    // email: (value) => '',
-    // file: (value) => '',
-    // ip: (value) => '',
-    // url: (value) => '',
-    // precision: (value, percision) => '',
-    // positive: (value) => '',
-    // positiveOrZero: (value) => '',
-    // negative: (value) => '',
-    // negativeOrZero: (value) => '',
+    isLatLong: (value) => validator.isLatLong(value)
+        ? ''
+        : TEXTS.latLng
+    ,
+
+    email: (value) => validator.isEmail(value)
+        ? ''
+        : TEXTS.email
+    ,
+
+    data: (value) => validator.toDate(value) !== null
+        ? ''
+        : TEXTS.date
+    ,
+
+    url: (value) => validator.isURL(value)
+        ? ''
+        : TEXTS.url
+    ,
+
+    ip: (value) => validator.isIP(value)
+        ? ''
+        : TEXTS.ip
+    ,
 
     min: (_value, _min) => {
-        const valueFloat = parseFloat(_value);
-        const min = parseFloat(_min);
+        const valueFloat = validator.toFloat(_value);
+        const min = validator.toFloat(_min);
 
-        if (Number.isNaN(valueFloat)) {
+        if (!validator.isNumeric(_value)) {
             return _value.length > min
                 ? ''
                 : TEXTS.minString(min);
@@ -63,10 +85,10 @@ const VALIDATORS = {
     },
 
     max: (_value, _max) => {
-        const valueFloat = parseFloat(_value);
-        const max = parseFloat(_max);
+        const valueFloat = validator.toFloat(_value);
+        const max = validator.toFloat(_max);
 
-        if (Number.isNaN(valueFloat)) {
+        if (!validator.isNumeric(_value)) {
             return _value.length < max
                 ? ''
                 : TEXTS.maxString(max);
@@ -106,7 +128,7 @@ const validate = ({ants, value}) => {
             const vfn = VALIDATORS[name];
             const error = vfn
                 ? vfn(value, config)
-                : console.warn(`Trying to use unknown validator (${name})`);
+                : console.warn(`Trying to use unknown validator: (${name})`);
             error && sum.push(error);
 
             return sum;
