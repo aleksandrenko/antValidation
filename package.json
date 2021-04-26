@@ -20,6 +20,6 @@
     "jest": "^22.4.3"
   },
   "dependencies": {
-    "validator": "^10.0.0"
+    "validator": "^13.6.0"
   }
 }
